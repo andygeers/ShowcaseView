@@ -39,8 +39,7 @@ public class ActionViewTarget implements Target {
         mActionBarWrapper = new ActionBarViewWrapper(p);
     }
 
-    @Override
-    public Point getPoint() {
+    private Target getInternalTarget() {
         Target internal = null;
         setUp();
         switch (mType) {
@@ -60,13 +59,25 @@ public class ActionViewTarget implements Target {
             case TITLE:
                 internal = new ViewTarget(mActionBarWrapper.getTitleView());
                 break;
-                
+
             case MEDIA_ROUTE_BUTTON:
                 internal = new ViewTarget(mActionBarWrapper.getMediaRouterButtonView());
                 break;
 
         }
+        return internal;
+    }
+
+    @Override
+    public Point getPoint() {
+        Target internal = getInternalTarget();
         return internal.getPoint();
+    }
+
+    @Override
+    public Float getRadius() {
+        Target internal = getInternalTarget();
+        return internal.getRadius();
     }
 
     public enum Type {
