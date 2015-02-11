@@ -38,9 +38,9 @@ public interface ShowcaseDrawer {
      * @param buffer the bitmap to draw onto
      * @param x the x position of the point to showcase
      * @param y the y position of the point to showcase
-     * @param scaleMultiplier a scale factor. Currently unused
+     * @param targetRadius radius of the showcase
      */
-    void drawShowcase(Bitmap buffer, float x, float y, float scaleMultiplier);
+    void drawShowcase(Bitmap buffer, float x, float y, Float targetRadius);
 
     /**
      * @return the width of the showcase, used to calculate where to place text

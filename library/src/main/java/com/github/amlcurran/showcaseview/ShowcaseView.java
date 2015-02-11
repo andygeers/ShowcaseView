@@ -73,7 +73,7 @@ public class ShowcaseView extends RelativeLayout
     // Showcase metrics
     private int showcaseX = -1;
     private int showcaseY = -1;
-    private float scaleMultiplier = 1f;
+    private float targetRadius = 0;
 
     // Touch items
     private boolean hasCustomClickListener = false;
@@ -157,17 +157,18 @@ public class ShowcaseView extends RelativeLayout
         return shotStateStore.hasShot();
     }
 
-    void setShowcasePosition(Point point) {
-        setShowcasePosition(point.x, point.y);
+    void setShowcasePosition(Point point, float targetRadius) {
+        setShowcasePosition(point.x, point.y, targetRadius);
     }
 
-    void setShowcasePosition(int x, int y) {
+    void setShowcasePosition(int x, int y, float radius) {
         if (shotStateStore.hasShot()) {
             return;
         }
         getLocationInWindow(positionInWindow);
         showcaseX = x - positionInWindow[0];
         showcaseY = y - positionInWindow[1];
+        targetRadius = radius;
         //init();
         recalculateText();
         invalidate();
@@ -188,13 +189,23 @@ public class ShowcaseView extends RelativeLayout
                         updateBitmap();
                     }
 
-                    Point targetPoint = target.getPoint();
+                    Point targetPoint = null;
+                    Float radius = null;
+                    if (target != null) {
+                      targetPoint = target.getPoint();
+                      radius = target.getRadius();
+
+                      if (radius == null) {
+                          radius = showcaseDrawer.getBlockedRadius();
+                      }
+                    }
+
                     if (targetPoint != null) {
                         hasNoTarget = false;
                         if (animate) {
-                            animationFactory.animateTargetToPoint(ShowcaseView.this, targetPoint);
+                            animationFactory.animateTargetToPoint(ShowcaseView.this, targetPoint, radius);
                         } else {
-                            setShowcasePosition(targetPoint);
+                            setShowcasePosition(targetPoint, radius);
                         }
                     } else {
                         hasNoTarget = true;
@@ -225,11 +236,11 @@ public class ShowcaseView extends RelativeLayout
     }
 
     public void setShowcaseX(int x) {
-        setShowcasePosition(x, getShowcaseY());
+        setShowcasePosition(x, getShowcaseY(), targetRadius);
     }
 
     public void setShowcaseY(int y) {
-        setShowcasePosition(getShowcaseX(), y);
+        setShowcasePosition(getShowcaseX(), y, targetRadius);
     }
 
     public int getShowcaseX() {
@@ -240,6 +251,10 @@ public class ShowcaseView extends RelativeLayout
     public int getShowcaseY() {
         getLocationInWindow(positionInWindow);
         return showcaseY + positionInWindow[1];
+    }
+
+    public float getTargetRadius() {
+        return targetRadius;
     }
 
     /**
@@ -298,7 +313,7 @@ public class ShowcaseView extends RelativeLayout
 
         // Draw the showcase drawable
         if (!hasNoTarget) {
-            showcaseDrawer.drawShowcase(bitmapBuffer, showcaseX, showcaseY, scaleMultiplier);
+            showcaseDrawer.drawShowcase(bitmapBuffer, showcaseX, showcaseY, targetRadius);
             showcaseDrawer.drawToCanvas(canvas, bitmapBuffer);
         }
 
@@ -414,8 +429,8 @@ public class ShowcaseView extends RelativeLayout
         invalidate();
     }
 
-    private void setScaleMultiplier(float scaleMultiplier) {
-        this.scaleMultiplier = scaleMultiplier;
+    private void setTargetRadius(float targetRadius) {
+        setShowcasePosition(getShowcaseX(), getShowcaseY(), targetRadius);
     }
 
     public void hideButton() {

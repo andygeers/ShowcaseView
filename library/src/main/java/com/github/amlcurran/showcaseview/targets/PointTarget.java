@@ -37,4 +37,9 @@ public class PointTarget implements Target {
     public Point getPoint() {
         return mPoint;
     }
+
+    @Override
+    public Float getRadius() {
+        return null;
+    }
 }
