@@ -314,8 +314,8 @@ public class ShowcaseView extends RelativeLayout
         // Draw the showcase drawable
         if (!hasNoTarget) {
             showcaseDrawer.drawShowcase(bitmapBuffer, showcaseX, showcaseY, targetRadius);
-            showcaseDrawer.drawToCanvas(canvas, bitmapBuffer);
         }
+        showcaseDrawer.drawToCanvas(canvas, bitmapBuffer);
 
         // Draw the text on the screen, recalculating its position if necessary
         textDrawer.draw(canvas);
