@@ -17,12 +17,13 @@
 package com.github.amlcurran.showcaseview.targets;
 
 import android.graphics.Point;
+import com.github.amlcurran.showcaseview.ShowcaseView;
 
 public interface Target {
     Target NONE = new Target() {
         @Override
         public Point getPoint() {
-            return new Point(1000000, 1000000);
+            return new Point(ShowcaseView.NO_SHOWCASE_VALUE, ShowcaseView.NO_SHOWCASE_VALUE);
         }
 
         @Override

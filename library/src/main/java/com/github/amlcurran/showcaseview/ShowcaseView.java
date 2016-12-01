@@ -58,6 +58,8 @@ public class ShowcaseView extends RelativeLayout
     public static final int ABOVE_SHOWCASE = 1;
     public static final int BELOW_SHOWCASE = 3;
 
+    public static final int NO_SHOWCASE_VALUE = 1000000;
+
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({UNDEFINED, LEFT_OF_SHOWCASE, RIGHT_OF_SHOWCASE, ABOVE_SHOWCASE, BELOW_SHOWCASE})
     public @interface TextPosition {
@@ -166,8 +168,16 @@ public class ShowcaseView extends RelativeLayout
             return;
         }
         getLocationInWindow(positionInWindow);
-        showcaseX = x - positionInWindow[0];
-        showcaseY = y - positionInWindow[1];
+        if (x != NO_SHOWCASE_VALUE) {
+          showcaseX = x - positionInWindow[0];
+        } else {
+          showcaseX = x;
+        }
+        if (y != NO_SHOWCASE_VALUE) {
+          showcaseY = y - positionInWindow[1];
+        } else {
+          showcaseY = y;
+        }
         targetRadius = radius;
         //init();
         recalculateText();
@@ -202,7 +212,7 @@ public class ShowcaseView extends RelativeLayout
 
                     if (targetPoint != null) {
                         hasNoTarget = false;
-                        if (animate) {
+                        if ((animate) && (showcaseX != NO_SHOWCASE_VALUE)) {
                             animationFactory.animateTargetToPoint(ShowcaseView.this, targetPoint, radius);
                         } else {
                             setShowcasePosition(targetPoint, radius);
@@ -232,7 +242,7 @@ public class ShowcaseView extends RelativeLayout
     }
 
     public boolean hasShowcaseView() {
-        return (showcaseX != 1000000 && showcaseY != 1000000) && !hasNoTarget;
+        return (showcaseX != NO_SHOWCASE_VALUE && showcaseY != NO_SHOWCASE_VALUE) && !hasNoTarget;
     }
 
     public void setShowcaseX(int x) {
